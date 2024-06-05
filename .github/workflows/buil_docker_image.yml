@@ -8,6 +8,7 @@ on:
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -33,7 +34,8 @@ jobs:
         run: |
           echo "${SSH_KEY}" > key.pem
           chmod 600 key.pem
-          ssh -i key.pem ${SSH_USER}@${SSH_HOST} << 'EOF'
+          ssh -o StrictHostKeyChecking=no -i key.pem ${SSH_USER}@${SSH_HOST} << 'EOF'
+            mkdir lab5
             docker pull ${DOCKER_IMAGE}
             docker stop web-app || true
             docker rm web-app || true
