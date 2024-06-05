@@ -24,3 +24,20 @@ jobs:
         with:
           push: true
           tags: nykmaks/iit:latest
+
+      - name: Deploy to Server
+        env:
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+          SSH_USER: ${{ secrets.SSH_USER }}
+          SSH_KEY: ${{ secrets.SSH_KEY }}
+          DOCKER_IMAGE: nykmaks/iit:latest
+        run: |
+          echo "${SSH_KEY}" > key.pem
+          chmod 600 key.pem
+          ssh -i key.pem ${SSH_USER}@${SSH_HOST} << 'EOF'
+            docker pull ${DOCKER_IMAGE}
+            docker stop web-app || true
+            docker rm web-app || true
+            docker run -d -p 80:80 --name web-app ${DOCKER_IMAGE}
+          EOF
+          rm key.pem
