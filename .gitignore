@@ -1,0 +1,5 @@
+./terraform.tfstate
+./terraform.tfstate.backup
+./terplan
+./terraform.tfvars
+./.terraform.lock.hcl
